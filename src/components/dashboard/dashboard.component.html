@@ -1,0 +1,35 @@
+<div class="dashboard-container">
+  <h1>AI Trading Dashboard</h1>
+  <p><b>Backend: </b>Python FastAPI</p>
+  <p><b>Frontend: </b>Angular</p>
+  <p><b>State Management: </b>NgRx, RxJS</p>
+
+  <!-- Current Price Section -->
+  <div class="price-section">
+    <h2>Current {{symbolInput}} Price</h2>
+     <input
+        type="text"
+        [(ngModel)]="symbolInput"
+        placeholder="Enter symbol (e.g. TSLA)"
+        class="form-control"
+        style="width: 200px; display: inline-block; margin-right: 8px;"
+      />
+
+    <button (click)="runAllIBTests()" class="btn btn-primary">runAllIBTests interactive brokers.</button>
+    
+    <div class="price-display">
+      <div class="price-card">
+        <h3>{{ dashboardMessage$ | ngrxPush | json }}</h3>
+        <h3>Data: </h3>
+
+        {{dashboardData$ | ngrxPush | json}}
+      </div>
+    </div>
+  </div>
+
+  <!-- Historical Chart Section -->
+  <canvas baseChart
+    [data]="historicalData"
+    [options]="chartOptions"
+    [type]="chartType">
+  </canvas>
