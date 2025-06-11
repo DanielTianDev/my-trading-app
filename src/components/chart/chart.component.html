@@ -1,0 +1,47 @@
+<div class="chart-container">
+  <!-- Chart Header with Metric Selector -->
+  <div class="chart-header" *ngIf="showMetricSelector">
+    <div class="metric-selector">
+      <label for="metric-select">Price Metric:</label>
+      <select 
+        id="metric-select" 
+        [(ngModel)]="metric" 
+        (change)="onMetricChange()" 
+        class="form-select">
+        <option value="open">{{ getMetricDisplayName('open') }}</option>
+        <option value="high">{{ getMetricDisplayName('high') }}</option>
+        <option value="low">{{ getMetricDisplayName('low') }}</option>
+        <option value="close">{{ getMetricDisplayName('close') }}</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Chart Canvas -->
+  <div class="chart-wrapper" [style.height.px]="height">
+    <canvas 
+      baseChart
+      [data]="chartData"
+      [options]="chartOptions"
+      [type]="chartType">
+    </canvas>
+  </div>
+
+  <!-- Chart Footer with Data Info -->
+  <div class="chart-footer" *ngIf="data.length > 0">
+    <div class="data-info">
+      <span class="data-points">{{ data.length }} data points</span>
+      <span class="date-range" *ngIf="data.length > 1">
+        {{ data[0].date | date:'shortDate' }} - {{ data[data.length - 1].date | date:'shortDate' }}
+      </span>
+    </div>
+  </div>
+
+  <!-- No Data Message -->
+  <div class="no-data-message" *ngIf="data.length === 0">
+    <div class="message-content">
+      <span class="icon">📊</span>
+      <h3>No chart data available</h3>
+      <p>Please load some data to display the chart</p>
+    </div>
+  </div>
+</div>

@@ -1,78 +1,46 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PushPipe } from '@ngrx/component';
 import { Store } from '@ngrx/store';
 import * as dashboardSelectors from '../../store/dashboard/dashboard.selectors';
 import { dashboardActions } from '../../store/dashboard/dashboard.actions';
-import { BaseChartDirective } from 'ng2-charts';
-import {Chart, LineController, LineElement, PointElement, LinearScale, Title, CategoryScale, Legend, Tooltip,  ChartConfiguration, ChartType } from 'chart.js';
-
-
-Chart.register(LineController, LineElement, PointElement, LinearScale, Title, CategoryScale, Legend, Tooltip);
+import { ChartComponent, ChartDataPoint } from '../chart/chart.component';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule,PushPipe,FormsModule, BaseChartDirective],
+  imports: [CommonModule, PushPipe, FormsModule, ChartComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent {
-
+export class DashboardComponent implements OnInit {
   selectedMetric: 'open' | 'high' | 'low' | 'close' = 'close';
-  chartType: ChartType = 'line';
-  chartOptions: ChartConfiguration['options'] = {
-    responsive: true,
-    plugins: {
-      legend: {
-        display: true,
-      },
-      title: {
-        display: true,
-        text: 'Stock Price'
-      }
-    }
-  };
-
   symbolInput: string = ''; // Default input value
 
   get dashboardMessage$() {
     return this.store.select(dashboardSelectors.selectDashboardMessage);
   }
 
-  get dashboardData$() {
-    return this.store.select(dashboardSelectors.selectData);
+  get dashboardData$(): Observable<ChartDataPoint[]> {
+    return this.store.select(dashboardSelectors.selectData).pipe(
+      map(data => data || [])
+    );
   }
 
   get dataLength$() {
     return this.store.select(dashboardSelectors.selectDataLength);
   }
-
-  historicalData: ChartConfiguration['data'] = { labels: [], datasets: [] };
-
   ngOnInit() {
-    this.dashboardData$.subscribe(apiData => {
-      if (apiData && Array.isArray(apiData) && apiData.length) {
-        this.historicalData = {
-          labels: apiData.map(item => item.date),
-          datasets: [
-            {
-              label: `${this.symbolInput} ${this.selectedMetric} Price`,
-              data: apiData.map(item => item[this.selectedMetric]),
-              borderColor: 'blue',
-              fill: false,
-            }
-          ]
-        };
-      }
-    });
+    // Chart component will handle data subscription internally
+    // No need to manually manage chart data here anymore
   }
 
   constructor(private store: Store) { 
     this.runAllIBTests();
   }
-
 
   onMetricChange() {
     console.log('Metric changed to:', this.selectedMetric);

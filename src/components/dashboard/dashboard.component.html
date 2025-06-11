@@ -25,12 +25,14 @@
         {{dashboardData$ | ngrxPush | json}}
       </div>
     </div>
-  </div>
-
-  <h2>Prices for the last {{dataLength$ | ngrxPush}} days</h2>
-  <!-- Historical Chart Section -->
-  <canvas baseChart
-    [data]="historicalData"
-    [options]="chartOptions"
-    [type]="chartType">
-  </canvas>
+  </div>  <h2>Prices for the last {{dataLength$ | ngrxPush}} days</h2>
+  <!-- Historical Chart Section using new Chart Component -->
+  <app-chart
+    [data]="(dashboardData$ | ngrxPush) || []"
+    [symbol]="symbolInput"
+    [metric]="selectedMetric"
+    [title]="'Historical ' + symbolInput + ' Price Data'"
+    [color]="'rgb(54, 162, 235)'"
+    [height]="400"
+    [showMetricSelector]="true">
+  </app-chart>

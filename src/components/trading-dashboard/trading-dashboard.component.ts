@@ -7,11 +7,14 @@ import { RiskManagementService, TradeRisk } from '../../services/risk-management
 import { Store } from '@ngrx/store';
 import { dashboardActions } from '../../store/dashboard/dashboard.actions';
 import * as dashboardSelectors from '../../store/dashboard/dashboard.selectors';
+import { ChartComponent, ChartDataPoint } from '../chart/chart.component';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'app-trading-dashboard',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, ChartComponent],
     templateUrl: './trading-dashboard.component.html',
     styleUrls: ['./trading-dashboard.component.scss']
 })
