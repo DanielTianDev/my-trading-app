@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { APP_CONFIG, AppConfig } from '../config/app-config.interface';
 
 export interface MVPTradeSignal {
     symbol: string;
@@ -27,7 +28,12 @@ export interface MarketData {
 export class MVPStrategyService {
     
     private currentBalance = 5000;
-    private maxRiskPerTrade = 0.02; // 2% max risk
+    
+    constructor(@Inject(APP_CONFIG) private config: AppConfig) {}
+    
+    get maxRiskPerTrade(): number {
+        return this.config.trading.maxRiskPerTrade;
+    }
     
     // MVP: Mean Reversion + Momentum Confluence Strategy
     private mvpStrategy = {

@@ -1,7 +1,76 @@
 <div class="trading-dashboard">
-    <header class="dashboard-header">
-        <h1>🤖 Trading Bot MVP</h1>
-        <p class="subtitle">Path to $10-20 Million Wealth</p>
+    <!-- Professional Bank-Style Header -->
+    <header class="bank-header">
+        <div class="header-content">
+            <div class="bank-logo">
+                <h1>🏦 TradingBank Pro</h1>
+                <span class="tagline">Journey to financial freedom</span>
+            </div>
+            
+            <!-- Account Summary Card -->
+            <div class="account-summary">
+                <div class="account-card">
+                    <div class="card-header">
+                        <div class="account-info">
+                            <span class="account-type">Trading Account</span>
+                            <span class="account-number">•••• •••• ••69 1337</span>
+                        </div>
+                        <button click="toggleBalanceVisibility()" class="visibility-toggle">
+                            {{ isBalanceVisible ? '👁️' : '👁️‍🗨️' }}
+                        </button>
+                    </div>
+                    
+                    <div class="balance-section">
+                        <div class="balance-label">Available Balance</div>
+                        <div class="balance-amount" *ngIf="accountBalance$ | async as balance; else loadingBalance">
+                            <span class="currency">$</span>
+                            <span class="amount" [class.hidden]="!isBalanceVisible">
+                                {{ isBalanceVisible ? balance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '••••••' }}
+                            </span>
+                        </div>
+                        <ng-template #loadingBalance>
+                            <div class="balance-amount loading">
+                                <span class="currency">$</span>
+                                <span class="amount">Loading...</span>
+                            </div>
+                        </ng-template>
+                        
+                        <div class="balance-actions">
+                            <button (click)="refreshAccountBalance()" class="action-btn refresh">
+                                <span class="icon">🔄</span>
+                                Refresh
+                            </button>
+                            <button class="action-btn transfer">
+                                <span class="icon">💸</span>
+                                Transfer 
+                            </button>
+                            <button class="action-btn deposit">
+                                <span class="icon">💰</span>
+                                Deposit
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Stats -->
+                    <div class="quick-stats">
+                        <div class="stat">
+                            <span class="stat-label">Today's P&L</span>
+                            <span class="stat-value positive">+$9,547.83</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Portfolio Value</span>
+                            <span class="stat-value">$18,380,812.92</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Buying Power</span>
+                            <span class="stat-value" *ngIf="accountBalance$ | async as balance">
+                                ${{ (balance * 4).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </header>
 
     <div class="strategy-info">
@@ -137,6 +206,9 @@
         </div>
     </div>
 
+    <br/>
+    <hr/>
+    
     <div class="signal-history" *ngIf="signalHistory.length > 0">
         <h2>📋 Recent Signals</h2>
         <div class="history-list">

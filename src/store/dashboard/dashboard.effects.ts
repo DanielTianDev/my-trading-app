@@ -11,7 +11,6 @@ export class DashboardEffects {
     
         
     private actions$ = inject(Actions);
-    //private tradingApi = inject(TradingApiService);
     private tradingApiIB = inject(InteractiveBrokersApiService);
 
 
@@ -51,45 +50,5 @@ export class DashboardEffects {
             )
         )
     );
-
-// loadTSLAPrice$ = createEffect(() =>
-//     this.actions$.pipe(
-//         ofType(dashboardActions.loadTSLAPrice),
-//         mergeMap(() =>
-//             this.tradingApi.getTSLAPrice().pipe(
-//                 map(data => {
-//                     console.log('API Response:', data); // Debug log
-//                     // For Alpha Vantage API response structure
-//                     const globalQuote = data['Global Quote'];
-//                     const price = globalQuote ? globalQuote['05. price'] : null;
-//                     return dashboardActions.loadTSLAPriceSuccess({ price: data });
-//                 }),
-//                 catchError(error => {
-//                     console.error('Error loading TSLA price:', error);
-//                     return of(dashboardActions.loadTSLAPriceFailure({ error: error.message }));
-//                 })
-//             )
-//         )
-//     )
-// );
-
-// loadTSLAHistoricalData$ = createEffect(() =>
-//     this.actions$.pipe(
-//         ofType(dashboardActions.loadTSLAHistoricalData),
-//         mergeMap(() =>
-//             this.tradingApi.getTSLAHistoricalData().pipe(
-//                 map(data => {
-//                     console.log('Historical API Response:', data); // Debug log
-//                     return dashboardActions.loadTSLAHistoricalDataSuccess({ data });
-//                 }),
-//                 catchError(error => {
-//                     console.error('Error loading TSLA historical data:', error);
-//                     return of(dashboardActions.loadTSLAHistoricalDataFailure({ error: error.message }));
-//                 })
-//             )
-//         )
-//     )
-// );
-
 
 }

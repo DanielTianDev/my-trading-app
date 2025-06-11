@@ -49,15 +49,6 @@ export class DashboardComponent {
     return this.store.select(dashboardSelectors.selectDataLength);
   }
 
-  // get tslaPrice$() {
-  //   return this.store.select(selectTSLAPrice);
-  // }
-
-  // get tslaHistoricalData$() {
-  //   // We'll implement this selector later
-  //   return this.store.select(selectTSLAData);
-  // } 
-
   historicalData: ChartConfiguration['data'] = { labels: [], datasets: [] };
 
   ngOnInit() {

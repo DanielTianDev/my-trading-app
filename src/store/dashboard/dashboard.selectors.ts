@@ -27,3 +27,8 @@ export const selectDataLength = createSelector(
   selectDashboardState,
   (state) => state.dataLength
 );
+
+export const selectAccountBalance = createSelector(
+  selectDashboardState,
+  (state) => state.accountBalance
+);

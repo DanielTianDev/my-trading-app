@@ -10,6 +10,8 @@ import { DashboardEffects } from '../store/dashboard/dashboard.effects'; // Unco
 import { DashboardComponent } from '../components/dashboard/dashboard.component';
 import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
+import { APP_CONFIG } from '../config/app-config.interface';
+import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,7 +20,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideStore({ dashboard: dashboardReducer }),
     provideEffects([DashboardEffects]),
-    provideHttpClient(), 
+    provideHttpClient(),
+    { provide: APP_CONFIG, useValue: environment },
     
   ],
 };

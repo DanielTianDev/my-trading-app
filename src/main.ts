@@ -1,9 +1,10 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { App } from './app/app';
+import { environment } from './environments/environment';
 
-// Configuration flag - set to true to use mock API, false to use real API
-const USE_MOCK_API = false; // You can change this manually or use environment variables
+// Configuration flag - use environment setting for mock API
+const USE_MOCK_API = environment.features.enableMockData;
 
 
 if (USE_MOCK_API) {

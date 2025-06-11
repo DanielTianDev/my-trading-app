@@ -7,6 +7,7 @@ export interface DashboardState {
   data?: any; // Optional, for historical data
   error?: any; // Optional, for error handling\
   dataLength?: number; // Optional, to track the length of data
+  accountBalance?: number; // Optional, for account balance
 }
 
 export const initialState: DashboardState = {
@@ -14,7 +15,8 @@ export const initialState: DashboardState = {
   tslaPrice: '0.00',
   data: null,
   error: null,
-  dataLength: 0 // Initialize dataLength to 0
+  dataLength: 0 ,// Initialize dataLength to 0
+  accountBalance: 0 // Initialize accountBalance to null
 };
 
 export const dashboardReducer = createReducer(
@@ -25,10 +27,10 @@ export const dashboardReducer = createReducer(
     message: 'Loading...'
   })),
 
-on(dashboardActions.loadHelloIBKRSuccess, (state, { data }) => ({
-    ...state,
-    message: `Connected: ${data.connected}, Symbol: ${data.symbol}, Latest Price: ${data.latest_price}`
-})),
+  on(dashboardActions.loadHelloIBKRSuccess, (state, { data }) => ({
+      ...state,
+      message: `Connected: ${data.connected}, Symbol: ${data.symbol}, Latest Price: ${data.latest_price}`
+  })),
 
   on(dashboardActions.loadHelloIBKRFailure, (state, { error }) => ({
     ...state,
@@ -61,29 +63,15 @@ on(dashboardActions.loadHelloIBKRSuccess, (state, { data }) => ({
     error: `Error loading historical data: ${error}`
   })),
 
-  // on(dashboardActions.loadTSLAPriceSuccess, (state, { price }) => ({
-  //   ...state,
-  //   tslaPrice: price
-  // })),
+  on(dashboardActions.loadAccountBalance, state => ({
+    ...state,
+    message: 'Loading account balance...'
+  })),
 
-  // on(dashboardActions.loadTSLAPriceFailure, (state, { error }) => ({
-  //   ...state,
-  //   error
-  // })),
-
-  // on(dashboardActions.loadTSLAHistoricalDataSuccess, (state, { data }) => ({
-  //   ...state,
-  //   data
-  // })),
-
-  // on(dashboardActions.loadTSLAHistoricalDataFailure, (state, { error }) => ({
-  //   ...state,
-  //   error
-  // })),
-
-  // on(dashboardActions.loadTSLAPrice, state => ({
-  //   ...state,
-  //   error: null // Reset error on new load action
-  // })),
+  on(dashboardActions.loadAccountBalanceSuccess, (state, { balance }) => ({
+    ...state,
+    accountBalance: balance,
+    message: `Account balance loaded: $${typeof balance === 'number' ? balance.toFixed(2) : Number(balance).toFixed(2)}`
+  })),
 
 );

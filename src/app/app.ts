@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { TradingDashboardComponent } from '../components/trading-dashboard/trading-dashboard-new.component';
-
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, TradingDashboardComponent],
+  imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

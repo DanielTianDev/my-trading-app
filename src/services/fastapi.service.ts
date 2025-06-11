@@ -1,24 +1,27 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { APP_CONFIG, AppConfig } from '../config/app-config.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FastApiService {
-  private baseUrl = 'http://127.0.0.1:8000';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    @Inject(APP_CONFIG) private config: AppConfig
+  ) {}
 
   getHelloIBKR(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/hello_ibkr`);
+    return this.http.get(`${this.config.api.fastApiUrl}/hello_ibkr`);
   }
 
   getHistoricalStock(symbol: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/historical_stock/${symbol}`);
+    return this.http.get(`${this.config.api.fastApiUrl}/historical_stock/${symbol}`);
   }
 
   getAccountBalance(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/account_balance`);
+    return this.http.get(`${this.config.api.fastApiUrl}/account_balance`);
   }
 }
