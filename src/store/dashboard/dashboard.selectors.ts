@@ -22,3 +22,8 @@ export const selectTSLAData = createSelector(
   selectDashboardState,
   (state) => state.data
 );
+
+export const selectDataLength = createSelector(
+  selectDashboardState,
+  (state) => state.dataLength
+);

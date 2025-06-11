@@ -1,0 +1,151 @@
+<div class="trading-dashboard">
+    <header class="dashboard-header">
+        <h1>🤖 Trading Bot MVP</h1>
+        <p class="subtitle">Path to $10-20 Million Wealth</p>
+    </header>
+
+    <div class="strategy-info">
+        <h2>📊 Strategy Information</h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>{{ strategyStats.name }}</h3>
+                <p><strong>Success Rate:</strong> {{ (strategyStats.successRate * 100).toFixed(1) }}%</p>
+                <p><strong>Avg Return:</strong> {{ (strategyStats.avgReturn * 100).toFixed(1) }}%</p>
+                <p><strong>Current Balance:</strong> ${{ strategyStats.currentBalance.toLocaleString() }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="signal-generator">
+        <h2>🎯 Generate Trading Signal</h2>
+        <div class="input-section">
+            <label for="symbol">Stock Symbol:</label>
+            <input 
+                id="symbol" 
+                type="text" 
+                [(ngModel)]="selectedSymbol" 
+                placeholder="e.g., AAPL" 
+                (keyup.enter)="generateSignal()"
+            />
+            <button (click)="generateSignal()" [disabled]="isLoading">
+                {{ isLoading ? 'Analyzing...' : 'Generate Signal' }}
+            </button>
+        </div>
+    </div>
+
+    <div class="current-signal" *ngIf="currentSignal">
+        <h2>📈 Current Signal</h2>
+        <div class="signal-card" [ngClass]="getSignalClass(currentSignal.action)">
+            <div class="signal-header">
+                <h3>{{ currentSignal.symbol }}</h3>
+                <span class="action-badge">{{ currentSignal.action }}</span>
+            </div>
+            
+            <div class="signal-details" *ngIf="currentSignal.action !== 'HOLD'">
+                <div class="detail-row">
+                    <span>Confidence:</span>
+                    <span>{{ (currentSignal.confidence * 100).toFixed(1) }}%</span>
+                </div>
+                <div class="detail-row">
+                    <span>Position Size:</span>
+                    <span>{{ currentSignal.positionSize }} shares</span>
+                </div>
+                <div class="detail-row">
+                    <span>Stop Loss:</span>
+                    <span>${{ currentSignal.stopLoss.toFixed(2) }}</span>
+                </div>
+                <div class="detail-row">
+                    <span>Target Price:</span>
+                    <span>${{ currentSignal.targetPrice.toFixed(2) }}</span>
+                </div>
+                <div class="detail-row">
+                    <span>Risk Level:</span>
+                    <span class="risk-level" [ngClass]="getRiskClass(currentSignal.riskLevel)">
+                        {{ currentSignal.riskLevel }}
+                    </span>
+                </div>
+            </div>
+            
+            <div class="reasoning">
+                <h4>📝 Analysis:</h4>
+                <p>{{ currentSignal.reasoning }}</p>
+            </div>
+            
+            <div class="timestamp">
+                <small>Generated: {{ currentSignal.timestamp | date:'medium' }}</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="risk-analysis" *ngIf="currentRisk">
+        <h2>⚠️ Risk Analysis</h2>
+        <div class="risk-card">
+            <div class="risk-metrics">
+                <div class="metric">
+                    <span class="label">Max Loss:</span>
+                    <span class="value negative">${{ currentRisk.maxLoss.toFixed(2) }}</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Expected Value:</span>
+                    <span class="value" [ngClass]="currentRisk.expectedValue > 0 ? 'positive' : 'negative'">
+                        ${{ currentRisk.expectedValue.toFixed(2) }}
+                    </span>
+                </div>
+                <div class="metric">
+                    <span class="label">Sharpe Ratio:</span>
+                    <span class="value" [ngClass]="currentRisk.sharpeRatio > 1 ? 'positive' : 'negative'">
+                        {{ currentRisk.sharpeRatio.toFixed(2) }}
+                    </span>
+                </div>
+                <div class="metric">
+                    <span class="label">Risk of Ruin:</span>
+                    <span class="value" [ngClass]="currentRisk.riskOfRuin < 0.05 ? 'positive' : 'negative'">
+                        {{ (currentRisk.riskOfRuin * 100).toFixed(1) }}%
+                    </span>
+                </div>
+            </div>
+            <div class="risk-recommendation">
+                <h4>📊 Recommendation:</h4>
+                <p>{{ currentRisk.recommendation }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="quick-actions">
+        <h2>⚡ Quick Actions</h2>
+        <div class="action-buttons">
+            <button (click)="generateSignal('AAPL')" class="quick-btn">📱 Analyze AAPL</button>
+            <button (click)="generateSignal('MSFT')" class="quick-btn">💻 Analyze MSFT</button>
+            <button (click)="generateSignal('GOOGL')" class="quick-btn">🔍 Analyze GOOGL</button>
+            <button (click)="generateSignal('TSLA')" class="quick-btn">🚗 Analyze TSLA</button>
+        </div>
+    </div>
+
+    <div class="api-testing" *ngIf="realMarketData">
+        <h2>🔗 Live Market Data (IBKR)</h2>
+        <div class="api-card">
+            <div class="api-status" [ngClass]="realMarketData.connected ? 'connected' : 'disconnected'">
+                <span>{{ realMarketData.connected ? '✅ Connected' : '❌ Disconnected' }}</span>
+            </div>
+            <div class="market-info">
+                <p><strong>Symbol:</strong> {{ realMarketData.symbol }}</p>
+                <p><strong>Latest Price:</strong> ${{ realMarketData.latest_price?.toFixed(2) || 'N/A' }}</p>
+            </div>
+            <button (click)="testIBKRConnection()" [disabled]="isTestingConnection">
+                {{ isTestingConnection ? 'Testing...' : 'Test IBKR Connection' }}
+            </button>
+        </div>
+    </div>
+
+    <div class="signal-history" *ngIf="signalHistory.length > 0">
+        <h2>📋 Recent Signals</h2>
+        <div class="history-list">
+            <div *ngFor="let signal of signalHistory" class="history-item">
+                <span class="symbol">{{ signal.symbol }}</span>
+                <span class="action" [ngClass]="getSignalClass(signal.action)">{{ signal.action }}</span>
+                <span class="confidence">{{ (signal.confidence * 100).toFixed(0) }}%</span>
+                <span class="time">{{ signal.timestamp | date:'short' }}</span>
+            </div>
+        </div>
+    </div>
+</div>

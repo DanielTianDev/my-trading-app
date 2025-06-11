@@ -60,4 +60,8 @@ export const dashboardActions = {
     '[Dashboard] Test Search Contracts Failure',
     props<{ error: any }>()
   ),
+
+  loadAccountBalance: createAction('[Dashboard] Load Account Balance'),
+  loadAccountBalanceSuccess: createAction('[Dashboard] Load Account Balance Success', props<{ balance: number }>()),
+  loadAccountBalanceFailure: createAction('[Dashboard] Load Account Balance Failure', props<{ error: string }>()),
 };

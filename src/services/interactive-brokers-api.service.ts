@@ -34,7 +34,10 @@ export class InteractiveBrokersApiService {
     }
 
 
-
+    getAccountBalance(): Observable<{ balance: number }> {
+      // Dummy implementation for account balance
+      return of({ balance: 5000 });
+    }
 
 
     // 1. AUTHENTICATION & CONNECTION TESTING

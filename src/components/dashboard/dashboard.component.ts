@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PushPipe } from '@ngrx/component';
 import { Store } from '@ngrx/store';
-import { selectDashboardMessage, selectData } from '../../store/dashboard/dashboard.selectors';
+import * as dashboardSelectors from '../../store/dashboard/dashboard.selectors';
 import { dashboardActions } from '../../store/dashboard/dashboard.actions';
 import { BaseChartDirective } from 'ng2-charts';
 import {Chart, LineController, LineElement, PointElement, LinearScale, Title, CategoryScale, Legend, Tooltip,  ChartConfiguration, ChartType } from 'chart.js';
@@ -30,7 +30,7 @@ export class DashboardComponent {
       },
       title: {
         display: true,
-        text: 'Stock Price - Last 12 Months'
+        text: 'Stock Price'
       }
     }
   };
@@ -38,11 +38,15 @@ export class DashboardComponent {
   symbolInput: string = ''; // Default input value
 
   get dashboardMessage$() {
-    return this.store.select(selectDashboardMessage);
+    return this.store.select(dashboardSelectors.selectDashboardMessage);
   }
 
   get dashboardData$() {
-    return this.store.select(selectData);
+    return this.store.select(dashboardSelectors.selectData);
+  }
+
+  get dataLength$() {
+    return this.store.select(dashboardSelectors.selectDataLength);
   }
 
   // get tslaPrice$() {

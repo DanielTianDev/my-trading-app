@@ -4,7 +4,7 @@ import { TradingApiService } from '../../trading-api.service';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { dashboardActions } from './dashboard.actions';
 import { of } from 'rxjs';
-import { InteractiveBrokersApiService } from '../../interactive-brokers-api.service';
+import { InteractiveBrokersApiService } from '../../services/interactive-brokers-api.service';
 
 @Injectable()
 export class DashboardEffects {
@@ -37,6 +37,18 @@ export class DashboardEffects {
             catchError(error => of(dashboardActions.loadHistoricalStockFailure({ error })))
             )
         )
+        )
+    );
+
+    loadAccountBalance$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(dashboardActions.loadAccountBalance),
+            mergeMap(() =>
+                this.tradingApiIB.getAccountBalance().pipe(
+                    map(response => dashboardActions.loadAccountBalanceSuccess({ balance: response.balance })),
+                    catchError(error => of(dashboardActions.loadAccountBalanceFailure({ error: error.message })))
+                )
+            )
         )
     );
 

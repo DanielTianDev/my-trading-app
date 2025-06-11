@@ -5,14 +5,16 @@ export interface DashboardState {
   message: string;
   tslaPrice?: string;
   data?: any; // Optional, for historical data
-  error?: any; // Optional, for error handling
+  error?: any; // Optional, for error handling\
+  dataLength?: number; // Optional, to track the length of data
 }
 
 export const initialState: DashboardState = {
   message: 'hello world',
   tslaPrice: '0.00',
   data: null,
-  error: null
+  error: null,
+  dataLength: 0 // Initialize dataLength to 0
 };
 
 export const dashboardReducer = createReducer(
@@ -44,12 +46,13 @@ on(dashboardActions.loadHelloIBKRSuccess, (state, { data }) => ({
     if (Array.isArray(data) && data.length > 0) {
       const first = data[0];
       const last = data[data.length - 1];
-      message = `Loaded ${data.length} weeks: ${first.date} to ${last.date}`;
+      message = `Loaded ${data.length} days: ${first.date} to ${last.date}`;
     }
     return {
       ...state,
       data,
-      message
+      message,
+      dataLength: data.length,
     };
   }),
 
