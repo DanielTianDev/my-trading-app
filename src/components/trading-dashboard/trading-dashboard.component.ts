@@ -28,9 +28,19 @@ export class TradingDashboardComponent implements OnInit {
     isLoading = false;
     isTestingConnection = false;
     isBalanceVisible = true;
+    
+    // Chart data properties
+    chartData: ChartDataPoint[] = [];
+    selectedMetric: 'open' | 'high' | 'low' | 'close' = 'close';
 
     get accountBalance$() {
         return this.store.select(dashboardSelectors.selectAccountBalance);
+    }
+
+    get dashboardData$(): Observable<ChartDataPoint[]> {
+        return this.store.select(dashboardSelectors.selectData).pipe(
+            map(data => data || [])
+        );
     }
 
     constructor(
@@ -45,6 +55,20 @@ export class TradingDashboardComponent implements OnInit {
         this.generateSignal(); // Generate initial signal
         this.testIBKRConnection(); // Test connection on startup
         this.store.dispatch(dashboardActions.loadAccountBalance());
+        
+        // Load historical data for chart
+        this.loadHistoricalData();
+        
+        // Subscribe to chart data updates
+        this.dashboardData$.subscribe(data => {
+            this.chartData = data;
+        });
+    }
+    
+    loadHistoricalData() {
+        if (this.selectedSymbol) {
+            this.store.dispatch(dashboardActions.loadHistoricalStock({ symbol: this.selectedSymbol }));
+        }
     }
 
     refreshAccountBalance() {
@@ -61,6 +85,12 @@ export class TradingDashboardComponent implements OnInit {
         if (!targetSymbol) return;
 
         this.isLoading = true;
+        
+        // Load historical data for the new symbol
+        if (symbol && symbol !== this.selectedSymbol) {
+            this.store.dispatch(dashboardActions.loadHistoricalStock({ symbol: targetSymbol }));
+        }
+        
         this.mvpStrategy.generateMVPSignal(targetSymbol).subscribe({
             next: (signal) => {
                 this.currentSignal = signal;

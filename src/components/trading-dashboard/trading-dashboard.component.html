@@ -220,4 +220,21 @@
             </div>
         </div>
     </div>
+
+    <!-- Historical Price Chart Section -->
+    <div class="chart-section">
+        <h2>📊 Historical Price Chart</h2>
+        <app-chart
+            [data]="(dashboardData$ | async) || []"
+            [symbol]="selectedSymbol"
+            [metric]="selectedMetric"
+            [title]="'Historical ' + selectedSymbol + ' Price Data'"
+            [color]="'rgb(75, 192, 192)'"
+            [height]="400"
+            [showMetricSelector]="true">
+        </app-chart>
+    </div>
+
+    <br/>
+    <hr/>
 </div>

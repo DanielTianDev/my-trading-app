@@ -305,6 +305,25 @@ h2 {
   gap: 10px;
 }
 
+/* Chart section styling */
+.chart-section {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin: 24px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e4e7;
+}
+
+.chart-section h2 {
+  margin-bottom: 20px;
+  color: #2c3e50;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 @media (max-width: 768px) {
   .trading-dashboard {
     padding: 15px;
