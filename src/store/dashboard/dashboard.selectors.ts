@@ -1,7 +1,7 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { DashboardState } from './dashboard.reducer';
+import { State } from './dashboard.reducer';
 
-export const selectDashboardState = createFeatureSelector<DashboardState>('dashboard');
+export const selectDashboardState = createFeatureSelector<State>('dashboard');
 
 export const selectDashboardMessage = createSelector(
   selectDashboardState,
@@ -31,4 +31,9 @@ export const selectDataLength = createSelector(
 export const selectAccountBalance = createSelector(
   selectDashboardState,
   (state) => state.accountBalance
+);
+
+export const selectCustomChartData = createSelector(
+  selectDashboardState,
+  (state) => state.customChartData
 );

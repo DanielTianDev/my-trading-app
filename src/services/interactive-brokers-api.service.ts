@@ -19,7 +19,7 @@ export class InteractiveBrokersApiService {
                 paperTrading: this.config.trading.paperTrading
             });
         }
-    }
+    }   
 
     // Add headers for CORS
     private getHttpOptions() {
@@ -81,5 +81,22 @@ export class InteractiveBrokersApiService {
             message: 'CORS bypass - IB Gateway connection test',
             timestamp: new Date().toISOString()
         });
+    }
+
+    getHistoricalStockCustom(
+        symbol: string,
+        end_date: string = '',
+        duration_str: string = '1 M',
+        bar_size_setting: string = '1 day',
+        what_to_show: string = 'TRADES'
+    ): Observable<any[]> {
+        const params = {
+            symbol,
+            end_date,
+            duration_str,
+            bar_size_setting,
+            what_to_show
+        };
+        return this.http.get<any[]>(`${this.config.api.fastApiUrl}/historical_stock_custom/`, { params });
     }
 }

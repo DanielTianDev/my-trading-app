@@ -73,6 +73,63 @@
         </div>
     </header>
 
+    <!-- Symbol Input at the Top -->
+    <div class="symbol-input-top" style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+        <label for="topSymbolInput" style="font-weight: bold;">Stock Symbol:</label>
+        <input id="topSymbolInput" type="text" [(ngModel)]="selectedSymbol" placeholder="e.g., AAPL" style="width: 120px;" />
+        <button (click)="loadHistoricalData()" class="action-btn">Load</button>
+    </div>
+
+        <!-- Historical Price Chart Section -->
+    <div class="chart-section">
+        <h2>📊 Historical Price Chart</h2>
+        <!-- Custom Chart Controls -->
+        <form class="chart-controls" (ngSubmit)="loadHistoricalData()" style="margin-bottom: 1rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end;">
+            <div>
+                <label for="endDate">End Date:</label>
+                <input id="endDate" type="date" [(ngModel)]="customEndDate" name="endDate" />
+            </div>
+            <div>
+                <label for="duration">Duration:</label>
+                <select id="duration" [(ngModel)]="customDuration" name="duration">
+                    <option value="1 D">1 Day</option>
+                    <option value="1 W">1 Week</option>
+                    <option value="1 M">1 Month</option>
+                    <option value="1 Y">1 Year</option>
+                </select>
+            </div>
+            <div>
+                <label for="barSize">Bar Size:</label>
+                <select id="barSize" [(ngModel)]="customBarSize" name="barSize">
+                    <option value="1 min">1 min</option>
+                    <option value="5 mins">5 mins</option>
+                    <option value="1 hour">1 hour</option>
+                    <option value="1 day">1 day</option>
+                </select>
+            </div>
+            <div>
+                <label for="whatToShow">What to Show:</label>
+                <select id="whatToShow" [(ngModel)]="customWhatToShow" name="whatToShow">
+                    <option value="TRADES">TRADES</option>
+                    <option value="MIDPOINT">MIDPOINT</option>
+                    <option value="BID">BID</option>
+                    <option value="ASK">ASK</option>
+                </select>
+            </div>
+            <button type="submit" class="action-btn">Load Chart</button>
+        </form>
+        <app-chart
+            [data]="(customChartData$ | ngrxPush) || (dashboardData$ | async) || []"
+            [symbol]="selectedSymbol"
+            [metric]="selectedMetric"
+            [title]="'Historical ' + selectedSymbol + ' Price Data'"
+            [color]="'rgb(75, 192, 192)'"
+            [height]="400"
+            [showMetricSelector]="true">
+        </app-chart>
+    </div>
+
+
     <div class="strategy-info">
         <h2>📊 Strategy Information</h2>
         <div class="info-grid">
@@ -219,20 +276,6 @@
                 <span class="time">{{ signal.timestamp | date:'short' }}</span>
             </div>
         </div>
-    </div>
-
-    <!-- Historical Price Chart Section -->
-    <div class="chart-section">
-        <h2>📊 Historical Price Chart</h2>
-        <app-chart
-            [data]="(dashboardData$ | async) || []"
-            [symbol]="selectedSymbol"
-            [metric]="selectedMetric"
-            [title]="'Historical ' + selectedSymbol + ' Price Data'"
-            [color]="'rgb(75, 192, 192)'"
-            [height]="400"
-            [showMetricSelector]="true">
-        </app-chart>
     </div>
 
     <br/>

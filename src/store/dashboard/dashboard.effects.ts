@@ -51,4 +51,22 @@ export class DashboardEffects {
         )
     );
 
+    loadHistoricalStockCustom$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(dashboardActions.loadHistoricalStockCustom),
+            mergeMap(action =>
+                this.tradingApiIB.getHistoricalStockCustom(
+                    action.symbol,
+                    action.end_date || '',
+                    action.duration_str || '1 M',
+                    action.bar_size_setting || '1 day',
+                    action.what_to_show || 'TRADES'
+                ).pipe(
+                    map(data => dashboardActions.loadHistoricalStockCustomSuccess({ data })),
+                    catchError(error => of(dashboardActions.loadHistoricalStockCustomFailure({ error })))
+                )
+            )
+        )
+    );
+
 }

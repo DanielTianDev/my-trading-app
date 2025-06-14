@@ -1,22 +1,42 @@
 import { createReducer, on } from '@ngrx/store';
 import { dashboardActions } from './dashboard.actions';
 
-export interface DashboardState {
-  message: string;
-  tslaPrice?: string;
-  data?: any; // Optional, for historical data
-  error?: any; // Optional, for error handling\
-  dataLength?: number; // Optional, to track the length of data
-  accountBalance?: number; // Optional, for account balance
+
+export const FORM_ID = 'TRADING_DASHBOARD_FORM';
+export const TRADING_DASHBOARD_FORM_NAME = 'Trading Dashboard Form';
+
+export interface TradingDashboardFormState {
+  customDuration: string;
+  customBarSize: string;
+  customEndDate: string;
+  customWhatToShow: string;
 }
 
-export const initialState: DashboardState = {
+export interface State {
+  message: string;
+  tslaPrice?: string;
+  data?: any; 
+  error?: any; 
+  dataLength?: number; 
+  accountBalance?: number; 
+  customChartData?: any[] | null; // For custom chart data
+  chartForm: TradingDashboardFormState;
+}
+
+export const initialState: State = {
   message: 'hello world',
   tslaPrice: '0.00',
   data: null,
   error: null,
-  dataLength: 0 ,// Initialize dataLength to 0
-  accountBalance: 0 // Initialize accountBalance to null
+  dataLength: 0 ,
+  accountBalance: 0, 
+  customChartData: null,
+  chartForm: {
+    customDuration: '1 M',
+    customBarSize: '1 Day',
+    customEndDate: '',
+    customWhatToShow: 'TRADES'
+  }
 };
 
 export const dashboardReducer = createReducer(
@@ -72,6 +92,30 @@ export const dashboardReducer = createReducer(
     ...state,
     accountBalance: balance,
     message: `Account balance loaded: $${typeof balance === 'number' ? balance.toFixed(2) : Number(balance).toFixed(2)}`
+  })),
+
+  on(dashboardActions.loadHistoricalStockCustom, (state, { symbol }) => ({
+    ...state,
+    message: `Loading custom historical data for ${symbol}...`
+  })),
+
+  on(dashboardActions.loadHistoricalStockCustomSuccess, (state, { data }) => {
+    let message = 'Custom historical data loaded.';
+    if (Array.isArray(data) && data.length > 0) {
+      const first = data[0];
+      const last = data[data.length - 1];
+      message = `Loaded ${data.length} bars: ${first.date} to ${last.date}`;
+    }
+    return {
+      ...state,
+      customChartData: data,
+      message,
+    };
+  }),
+
+  on(dashboardActions.loadHistoricalStockCustomFailure, (state, { error }) => ({
+    ...state,
+    error: `Error loading custom historical data: ${error}`
   })),
 
 );

@@ -31,6 +31,19 @@ export const dashboardActions = {
     props<{ error: any }>()
   ),
 
+  // Custom Historical Stock (with params)
+  loadHistoricalStockCustom: createAction('[Dashboard] Load Historical Stock Custom',  
+    props<{ symbol: string; end_date?: string; duration_str?: string; bar_size_setting?: string; what_to_show?: string }>()
+  ),
+  loadHistoricalStockCustomSuccess: createAction(
+    '[Dashboard] Load Historical Stock Custom Success',
+    props<{ data: any[] }>()
+  ),
+  loadHistoricalStockCustomFailure: createAction(
+    '[Dashboard] Load Historical Stock Custom Failure',
+    props<{ error: any }>()
+  ),
+
   // Test Actions for IB Gateway
   testGetMSFTPrice: createAction('[Dashboard] Test Get MSFT Price'),
   testGetMSFTPriceSuccess: createAction(

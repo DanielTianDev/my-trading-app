@@ -10,16 +10,17 @@ import * as dashboardSelectors from '../../store/dashboard/dashboard.selectors';
 import { ChartComponent, ChartDataPoint } from '../chart/chart.component';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { PushPipe } from '@ngrx/component';
 
 @Component({
     selector: 'app-trading-dashboard',
     standalone: true,
-    imports: [CommonModule, FormsModule, ChartComponent],
+    imports: [CommonModule, FormsModule, ChartComponent, PushPipe],
     templateUrl: './trading-dashboard.component.html',
     styleUrls: ['./trading-dashboard.component.scss']
 })
 export class TradingDashboardComponent implements OnInit {
-    selectedSymbol = 'AAPL';
+    selectedSymbol = 'VOO';
     currentSignal: MVPTradeSignal | null = null;
     currentRisk: TradeRisk | null = null;
     signalHistory: MVPTradeSignal[] = [];
@@ -33,6 +34,13 @@ export class TradingDashboardComponent implements OnInit {
     chartData: ChartDataPoint[] = [];
     selectedMetric: 'open' | 'high' | 'low' | 'close' = 'close';
 
+    // Custom chart controls
+    customEndDate: string = '';
+    customDuration: string = '1 M';
+    customBarSize: string = '1 day';
+    customWhatToShow: string = 'TRADES';
+    customChartData: ChartDataPoint[] | null = null;
+
     get accountBalance$() {
         return this.store.select(dashboardSelectors.selectAccountBalance);
     }
@@ -41,6 +49,10 @@ export class TradingDashboardComponent implements OnInit {
         return this.store.select(dashboardSelectors.selectData).pipe(
             map(data => data || [])
         );
+    }
+
+    get customChartData$(){
+        return this.store.select(dashboardSelectors.selectCustomChartData);
     }
 
     constructor(
@@ -67,7 +79,21 @@ export class TradingDashboardComponent implements OnInit {
     
     loadHistoricalData() {
         if (this.selectedSymbol) {
-            this.store.dispatch(dashboardActions.loadHistoricalStock({ symbol: this.selectedSymbol }));
+            //this.store.dispatch(dashboardActions.loadHistoricalStock({ symbol: this.selectedSymbol }));
+            const params = {
+                symbol: this.selectedSymbol,
+                end_date: this.customEndDate,
+                duration_str: this.customDuration,
+                bar_size_setting: this.customBarSize,
+                what_to_show: this.customWhatToShow
+            };
+            this.store.dispatch(dashboardActions.loadHistoricalStockCustom({
+                symbol: this.selectedSymbol,
+                end_date: this.customEndDate,
+                duration_str: this.customDuration,
+                bar_size_setting: this.customBarSize,
+                what_to_show: this.customWhatToShow
+            }));
         }
     }
 
@@ -143,6 +169,44 @@ export class TradingDashboardComponent implements OnInit {
                 });
             }
         });
+    }
+
+    loadCustomChart() {
+        // const params = {
+        //     symbol: this.selectedSymbol,
+        //     end_date: this.customEndDate,
+        //     duration_str: this.customDuration,
+        //     bar_size_setting: this.customBarSize,
+        //     what_to_show: this.customWhatToShow
+        // };
+        // this.store.dispatch(dashboardActions.loadHistoricalStockCustom({
+        //     symbol: this.selectedSymbol,
+        //     end_date: this.customEndDate,
+        //     duration_str: this.customDuration,
+        //     bar_size_setting: this.customBarSize,
+        //     what_to_show: this.customWhatToShow
+        // }));
+        // // this.http.get<any[]>('http://localhost:8000/historical_stock_custom/', { params }).subscribe({
+        // //     next: (data) => {
+        // //         // Map backend data to ChartDataPoint[] if needed
+        // //         this.customChartData = data.map(bar => ({
+        // //             date: bar.date,
+        // //             open: bar.open,
+        // //             high: bar.high,
+        // //             low: bar.low,
+        // //             close: bar.close,
+        // //             volume: bar.volume
+        // //         }));
+        // //     },
+        // //     error: (err) => {
+        // //         console.error('Failed to load custom chart data', err);
+        // //         this.customChartData = null;
+        // //     }
+        // // });
+        // this.customChartData$?.subscribe(data => {
+        //     this.customChartData = data || null;
+        // });
+        alert("This feature is not yet implemented. Please check back later.");
     }
 
     private addToHistory(signal: MVPTradeSignal) {
